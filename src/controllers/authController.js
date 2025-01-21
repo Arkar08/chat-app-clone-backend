@@ -63,3 +63,11 @@ export const SignupController = async(req,res)=>{
         return res.status(500).json(error)
     }
 }
+
+export const LogoutController = (req,res) => {
+    res.cookie("jwt", "", {
+        httpOnly: true,
+        maxAge: new Date(0),
+      });
+    return res.status(200).json("logout successfully");
+}
