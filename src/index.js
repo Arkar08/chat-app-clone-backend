@@ -4,6 +4,8 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import connectedDb from './db/connectedDb.js'
 import AuthRoute from './routes/AuthRoute.js'
+import MessageRoute from './routes/messageRoute.js'
+import ChatRoute from './routes/chatRoute.js'
 
 dotenv.config()
 
@@ -21,7 +23,9 @@ app.get('/',(req,res)=>{
     return res.status(200).json('Hello world')
 })
 
-app.use('/api/v1',AuthRoute)
+app.use('/api/v1/auth',AuthRoute)
+app.use('/api/v1/message',MessageRoute)
+app.use('/api/v1/conversation',ChatRoute)
 
 app.listen(PORT,async()=>{
     await connectedDb();

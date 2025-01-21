@@ -6,9 +6,9 @@ const messageSchema = new mongoose.Schema({
         refs:"Users",
         required:true
     },
-    receivedId:{
+    chatId:{
         type:mongoose.Schema.Types.ObjectId,
-        refs:"Users",
+        refs:"Chats",
         required:true
     },
     meassage:{
@@ -16,9 +16,10 @@ const messageSchema = new mongoose.Schema({
         required:true
     },
     picture:{
-        type:String
+        type:String,
+        default:''
     }
-})
+},{timestamps:true})
 
 const Message = mongoose.model("Message",messageSchema)
 export default Message;
