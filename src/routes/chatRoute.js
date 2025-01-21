@@ -6,6 +6,6 @@ const router = express.Router()
 
 
 router.post('/',protectedRoute,postConversation)
-router.get('/:id',protectedRoute,getConversationUser)
+router.get('/:userId',protectedRoute,getConversationUser)
 
 export default router;

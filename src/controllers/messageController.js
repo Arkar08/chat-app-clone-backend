@@ -10,9 +10,14 @@ export const createMessage = async(req,res)=>{
             meassage:message,
             picture:picture
         })
-        return res.status(201).json(newMessage)
+        const postData = {
+            success:true,
+            status:201,
+            data:newMessage
+        }
+        return res.status(201).json(postData)
     } catch (error) {
-        return res.status(500).json(error)
+        return res.status(500).json({message:error})
     }
 }
 
@@ -21,9 +26,14 @@ export const getMessage = async(req,res)=>{
     try {
         const findMessage = await Message.find({chatId:chatId})
         if(!findMessage){
-            return res.status(404).json('Message not found')
+            return res.status(404).json({error:'Message not found'})
         }
-        return res.status(200).json(findMessage)
+        const getData= {
+            success:true,
+            status:200,
+            data:findMessage
+        }
+        return res.status(200).json(getData)
     } catch (error) {
         return res.status(500).json(error)
     }
