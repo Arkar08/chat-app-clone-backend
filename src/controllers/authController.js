@@ -25,6 +25,7 @@ export const LoginController = async(req,res)=>{
           if (validatorPassword) {
             const token = await generateToken(res, validatorEmail._id);
             const getData = {
+                id:validatorEmail._id,
                 email:validatorEmail.email,
                 name:validatorEmail.name,
                 token,
@@ -78,6 +79,7 @@ export const SignupController = async(req,res)=>{
         const token = await generateToken(res, newUser._id);
         const getData = {
             token,
+            id:newUser._id,
             name:newUser.name,
             email:newUser.email
         }

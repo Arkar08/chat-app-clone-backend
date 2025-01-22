@@ -4,15 +4,26 @@ import Users from "../models/UserSchema.js";
 export const postConversation = async(req,res)=>{
     const senderId = req.user._id;
     const {contact} = req.body;
+    if(!contact){
+        return res.status(404).json({message:'Plz filled out in the form field.'})
+    }
 
     try {
         const receivedId = await Users.findOne({contact:contact})
-        const findChat = await Chats.findOne({ members: { $all: [senderId, receivedId._id] } })
-        if(findChat){
+        const findChat = await Chats.find({}) 
+        const mapChat = findChat.filter((chat)=>{
+          return chat.senderId.toString() === senderId.toString() 
+        })
+        const filterChat = mapChat.filter((chatList)=>{
+            return chatList.receivedId.toString() === receivedId._id.toString()
+        })
+        if(filterChat.length > 0){
             return res.status(400).json({message:'conversation already exists.'})
         }
+        
         const newChat = await Chats.create({
-            members:[senderId, receivedId._id]
+           senderId:senderId,
+           receivedId:receivedId._id
         })
         const postData = {
             success:true,
@@ -26,25 +37,34 @@ export const postConversation = async(req,res)=>{
 }
 
 export const getConversationUser = async(req,res)=>{
-    const userId = req.params.userId
+    const userId = req.params.userId;
     try {
-        const findCoversation = await Chats.find({})
-        const mapConversation = findCoversation?.filter((conversation)=>{
-            if(conversation.members[0] == userId){
-                return conversation
-            }
+        const findConversation = await Chats.find({senderId:userId})
+        if(findConversation.length === 0){
+            return res.status(404).json({ message: 'No conversations found for this user.' })
+        }
+        const mapConversation = findConversation.map((conversation)=>{
+            return conversation.receivedId
         })
-
-        if (findCoversation.length === 0) {
-            return res.status(404).json({ message: 'No conversations found for this user.' });
-        }
-        const getData ={
-            success:true,
-            status:200,
-            data:mapConversation
-        }
-        return res.status(200).json(getData)
+        const findUser = await Users.find({_id:mapConversation})
+        const data = findUser.map((user)=>{
+            const userList = user.toObject()
+            delete userList.password;
+            delete userList.__v
+            delete userList.email;
+            delete userList.createdAt;
+            delete userList.updatedAt;
+            return userList;
+        })
+       
+        const postData ={
+                success:true,
+                status:200,
+                data:data
+            }
+            return res.status(200).json(postData)
     } catch (error) {
         return res.status(500).json({message:error})
     }
 }
+

@@ -28,6 +28,6 @@ app.use('/api/v1/message',MessageRoute)
 app.use('/api/v1/conversation',ChatRoute)
 
 app.listen(PORT,async()=>{
-    await connectedDb();
     console.log(`server is connecting with ${PORT}`)
+    await connectedDb();
 })
