@@ -40,9 +40,6 @@ export const getConversationUser = async(req,res)=>{
     const userId = req.params.userId;
     try {
         const findConversation = await Chats.find({senderId:userId})
-        if(findConversation.length === 0){
-            return res.status(404).json({ message: 'No conversations found for this user.' })
-        }
         const mapConversation = findConversation.map((conversation)=>{
             return conversation.receivedId
         })
@@ -57,6 +54,7 @@ export const getConversationUser = async(req,res)=>{
             return userList;
         })
        
+       
         const postData ={
                 success:true,
                 status:200,
@@ -68,3 +66,20 @@ export const getConversationUser = async(req,res)=>{
     }
 }
 
+
+export const getAllChat = async(req,res)=>{
+    try {
+        const allChat = await Chats.find({})
+        if(allChat.length === 0){
+            return res.status(404).json("No conversation in this chat.")
+        }
+        const postData = {
+            success:true,
+            status:200,
+            data:allChat
+        }
+        return res.status(200).json(postData)
+    } catch (error) {
+        return res.status(500).json({message:error})
+    }
+}
