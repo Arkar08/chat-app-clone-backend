@@ -89,6 +89,7 @@
 
 import Chats from "../models/ChatSchema.js";
 import Users from "../models/UserSchema.js";
+import mongoose from "mongoose";
 
 
 export const postChat = async(req,res)=>{
@@ -108,8 +109,55 @@ export const postChat = async(req,res)=>{
         const newChat = await Chats.create({
             conversations:[user._id,senderId]
         })
+        return res.status(201).json(newChat)
     } catch (error) {
         return res.status(500).json({message:error})
     }
 }
 
+export const getChat = async(req,res)=>{
+    const {userId} = req.params;
+    const senderObjectId = new mongoose.Types.ObjectId(userId);
+    try {
+        const findUser = await Users.findOne({_id:senderObjectId})
+        if(!findUser){
+            return res.status(404).json({message: 'User does not exist'})
+        }
+        const findChat = await Chats.findOne({
+            conversations:{$in : [senderObjectId]}
+        })
+        if(!findChat){
+            return res.status(404).json({message:'conversation does not exist'})
+        }
+        const data = {
+            status:200,
+            success:true,
+            data:findChat
+        }
+        return res.status(200).json(data)
+    } catch (error) {
+        return res.status(500).json({message:error})
+    }
+}
+
+export const getAllChat = async(req,res)=>{
+    const {senderId,receivedId} = req.params;
+    const senderObjectId = new mongoose.Types.ObjectId(senderId);
+    const receivedObjectId = new mongoose.Types.ObjectId(receivedId);
+    try {
+        const findChat = await Chats.findOne({
+            conversations:{$all : [senderObjectId,receivedObjectId]}
+        })
+        if(!findChat){
+            return res.status(404).json({message:'conversation does not exist'})
+        }
+        const data = {
+            status:200,
+            success:true,
+            data:findChat
+        }
+        return res.status(200).json(data)
+    } catch (error) {
+        return res.status(500).json({message:error})
+    }
+}

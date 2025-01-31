@@ -1,5 +1,5 @@
 import Message from "../models/MessageSchema.js";
-
+import Chats from '../models/ChatSchema.js'
 export const createMessage = async(req,res)=>{
     const senderId = req.user._id;
     const {chatId,message,picture} = req.body;
@@ -22,10 +22,14 @@ export const createMessage = async(req,res)=>{
 }
 
 export const getMessage = async(req,res)=>{
-    const chatId = req.params.chatId
+    const {chatId} = req.params;
     try {
+        const findChat = await Chats.find({_id:chatId})
+        if(findChat.length === 0){
+            return res.status(404).json({message:'conversation does not exist.'})
+        }
         const findMessage = await Message.find({chatId:chatId})
-        if(!findMessage){
+        if(findMessage.length === 0){
             return res.status(404).json({error:'Message not found'})
         }
         const getData= {
