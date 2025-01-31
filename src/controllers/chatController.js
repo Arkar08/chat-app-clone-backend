@@ -100,10 +100,10 @@ export const postChat = async(req,res)=>{
         if(!user){
             return res.status(404).json({message:'contact does not exist'})
         }
-        const findChat = await Chats.find({
+        const findChat = await Chats.findOne({
             conversations:{$all : [user._id,senderId]}
         })
-        if(findChat.length > 1){
+        if(!findChat.length){
             return res.status(400).json({message:'conversation is already exist'})
         }
         const newChat = await Chats.create({
@@ -123,7 +123,7 @@ export const getChat = async(req,res)=>{
         if(!findUser){
             return res.status(404).json({message: 'User does not exist'})
         }
-        const findChat = await Chats.findOne({
+        const findChat = await Chats.find({
             conversations:{$in : [senderObjectId]}
         })
         if(!findChat){
