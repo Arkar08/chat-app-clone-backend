@@ -103,7 +103,7 @@ export const postChat = async(req,res)=>{
         const findChat = await Chats.findOne({
             conversations:{$all : [user._id,senderId]}
         })
-        if(!findChat.length){
+        if(findChat){
             return res.status(400).json({message:'conversation is already exist'})
         }
         const newChat = await Chats.create({
