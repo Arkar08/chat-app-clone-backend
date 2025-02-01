@@ -129,13 +129,30 @@ export const getChat = async(req,res)=>{
         if(!findChat){
             return res.status(404).json({message:'conversation does not exist'})
         }
+        const filterChat = findChat.map((chat)=>{
+            const filter = chat.conversations.filter((chatList)=>{
+                return chatList != userId
+            })
+            return filter.join(" ");
+        })
+
+        const users = await Users.find({_id:filterChat})
+        const findUsers = users.map((user)=>{
+            const userList = user.toObject()
+            delete userList.password;
+            delete userList.createdAt;
+            delete userList.updatedAt;
+            return userList
+        })
+
         const data = {
             status:200,
             success:true,
-            data:findChat
+            data:findUsers
         }
         return res.status(200).json(data)
     } catch (error) {
+        console.log(error)
         return res.status(500).json({message:error})
     }
 }

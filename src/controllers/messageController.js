@@ -30,7 +30,7 @@ export const getMessage = async(req,res)=>{
         }
         const findMessage = await Message.find({chatId:chatId})
         if(findMessage.length === 0){
-            return res.status(404).json({error:'Message not found'})
+            return res.status(200).json({message:'Message not found'})
         }
         const getData= {
             success:true,
