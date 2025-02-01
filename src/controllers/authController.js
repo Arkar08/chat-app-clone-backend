@@ -103,3 +103,27 @@ export const LogoutController = (req,res) => {
       });
     return res.status(200).json("logout successfully");
 }
+
+
+export const getUser = async(req,res)=>{
+    const {id} = req.params;
+    try {
+        const findUsers = await Users.findOne({_id:id})
+        if(!findUsers){
+            return res.status(404).json('Something went wrong')
+        }
+        const passData = findUsers.toObject()
+        delete passData.password;
+        delete passData.createdAt;
+        delete passData.updatedAt
+        const data = {
+            success :true,
+            status:200,
+            data:passData
+        }
+        return res.status(200).json(data)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({message:error})
+    }
+}
