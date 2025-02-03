@@ -1,5 +1,6 @@
 import Message from "../models/MessageSchema.js";
 import Chats from '../models/ChatSchema.js'
+
 export const createMessage = async(req,res)=>{
     const senderId = req.user._id;
     const {chatId,message,picture} = req.body;
@@ -14,7 +15,7 @@ export const createMessage = async(req,res)=>{
             success:true,
             status:201,
             data:newMessage
-        }
+        } 
         return res.status(201).json(postData)
     } catch (error) {
         return res.status(500).json({message:error})
