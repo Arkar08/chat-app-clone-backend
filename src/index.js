@@ -6,10 +6,10 @@ import connectedDb from './db/connectedDb.js'
 import AuthRoute from './routes/AuthRoute.js'
 import MessageRoute from './routes/messageRoute.js'
 import ChatRoute from './routes/chatRoute.js'
+import { app ,server} from '../socket/socket.js'
 
 dotenv.config()
 
-const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(cookieParser())
@@ -27,7 +27,7 @@ app.use('/api/v1/auth',AuthRoute)
 app.use('/api/v1/message',MessageRoute)
 app.use('/api/v1/conversation',ChatRoute)
 
-app.listen(PORT,async()=>{
+server.listen(PORT,async()=>{
     console.log(`server is connecting with ${PORT}`)
     await connectedDb();
 })
