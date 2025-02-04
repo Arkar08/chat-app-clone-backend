@@ -10,6 +10,7 @@ export const server = http.createServer(app)
 export const io = new Server(server,{
     cors:{
         origin:['http://localhost:4000'],
+        // https://chat-app-clone-three.vercel.app
         methods:['Get','Post']
     },
 })
@@ -26,6 +27,10 @@ io.on('connection',(socket)=>{
     })
     
     socket.on('sendMessageToRoom', (data) => {
-        io.to(data.chatId).emit('receiveMessage', data.message);  // Broadcast the message to the room
+        const postData = {
+            message:data.meassage,
+            date:data.createdAt
+        }
+        io.to(data.chatId).emit('receiveMessage', postData) 
     });
 })
