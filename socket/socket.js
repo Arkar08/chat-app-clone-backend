@@ -31,6 +31,10 @@ io.on('connection',(socket)=>{
             message:data.meassage,
             date:data.createdAt
         }
-        io.to(data.chatId).emit('receiveMessage', postData) 
+        io.to(data.chatId).emit('receiveMessage', postData)
     });
+
+    socket.on('sendNotifications',(data)=>{
+        io.to(data.receivedId).emit('newNotifications',data.message)
+    })
 })

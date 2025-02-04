@@ -1,5 +1,6 @@
 import Message from "../models/MessageSchema.js";
 import Chats from '../models/ChatSchema.js'
+import { io } from "../../socket/socket.js";
 
 export const createMessage = async(req,res)=>{
     const senderId = req.user._id;
